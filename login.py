@@ -1648,13 +1648,10 @@ def flow_run_account(acc, idx, hwnd, pid):
             if not wait_with_focus(hwnd, 2.0):
                 return False
             log("--- FASE 3: Desconectar ---")
-            log("    Click Desconectar em (2315,988)")
-            focus_game(hwnd)
-            click(2315, 988)
-            if not wait_with_focus(hwnd, 2.0):
+            if not _do_disconnect(hwnd):
                 return False
-            write_output_line(acc, idx, "Logada com sucesso")
-            log("    *** CONTA %d FINALIZADA (Mercury sem nivel) ***" % idx)
+            write_output_line(acc, idx, "Fail")
+            log("    *** CONTA %d FINALIZADA (Fail — Mercury sem nivel) ***" % idx)
             return True
 
     else:
@@ -1711,13 +1708,10 @@ def flow_run_account(acc, idx, hwnd, pid):
             if not wait_with_focus(hwnd, 2.0):
                 return False
             log("--- FASE 3: Desconectar ---")
-            log("    Click Desconectar em (2315,988)")
-            focus_game(hwnd)
-            click(2315, 988)
-            if not wait_with_focus(hwnd, 2.0):
+            if not _do_disconnect(hwnd):
                 return False
-            write_output_line(acc, idx, "Logada com sucesso")
-            log("    *** CONTA %d FINALIZADA (Mercury sem nivel) ***" % idx)
+            write_output_line(acc, idx, "Fail")
+            log("    *** CONTA %d FINALIZADA (Fail — Mercury sem nivel) ***" % idx)
             return True
 
     # ═══ FASE 3: Desconectar ═══
