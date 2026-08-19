@@ -708,6 +708,25 @@ def mark_done(idx):
         f.write("")
 
 
+def read_last_index_from_output():
+    """Le o output.txt e retorna o ultimo numero de conta processado (ou -1)."""
+    if not os.path.exists(OUT_PATH):
+        return -1
+    last_idx = -1
+    try:
+        with open(OUT_PATH, "r", encoding="utf-8", errors="replace") as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("Conta "):
+                    try:
+                        last_idx = int(line.split()[1])
+                    except (ValueError, IndexError):
+                        pass
+    except IOError:
+        pass
+    return last_idx
+
+
 def write_output_line(acc, idx, status):
     """Escreve resultado da conta no output.txt no formato:
     Conta X
@@ -1113,9 +1132,9 @@ def do_credentials(acc, hwnd, idx=0):
     focus_game(hwnd)
     press_escape()
     time.sleep(1.0)
-    log("    => Click OK em (1280,590)")
+    log("    => Click OK em (1300,590)")
     focus_game(hwnd)
-    click(1280, 590)
+    click(1300, 590)
     time.sleep(1.0)
     return False
 
@@ -1788,12 +1807,18 @@ def run_flow(go_immediately, wait_process):
         return 1
     log("Contas carregadas: %d" % len(accs))
 
-    idx = read_int_file(CUR_PATH, 0)
-    if idx < 0 or idx >= len(accs):
+    last_done = read_last_index_from_output()
+    idx = last_done + 1 if last_done >= 0 else 0
+    if idx >= len(accs):
+        log("Todas as %d contas ja foram processadas (ultimo: %d)" % (len(accs), last_done))
+        return 0
+    if idx < 0:
         idx = 0
     limit = read_int_file(N_PATH, len(accs))
     if limit <= 0 or limit > len(accs):
         limit = len(accs)
+    if idx > 0:
+        log("Retomando da conta %d (ultimo processado: %d)" % (idx, last_done))
     log("Processando %d conta(s): indices %d..%d" % (limit - idx, idx, limit - 1))
 
     # gatilho F8 (no jogo) exceto com --go
@@ -1839,14 +1864,15 @@ def run_flow(go_immediately, wait_process):
             mark_done(idx)
             log("conta %d finalizada (entrou no mundo)" % idx)
             if opts["logout"] and need_coord("selecionar_servidor") and need_coord("desconectar"):
-                idx += 1
-            else:
-                log("(logout incompleto — encerrando loop para voce validar/mapear)")
-                break
+                pass  # fluxo de disconnect ja feito dentro de flow_run_account
+            idx += 1
         else:
-            log("conta %d NAO entrou no mundo — abortando loop (corrija e reinicie)" % idx)
+            log("conta %d falhou — proxima conta em 2s" % idx)
             write_output_line(acc, idx, "Fail")
-            break
+            idx += 1
+
+        log("Aguardando 2s antes da proxima conta...")
+        time.sleep(2.0)
 
     if g_logfile:
         g_logfile.close()
