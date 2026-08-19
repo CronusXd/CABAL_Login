@@ -864,7 +864,8 @@ def _screenshot_game(hwnd, region=None):
 
 
 def detect_subsenha_digits(hwnd, subsenha="", quiet=False):
-    """Usa cv2.matchTemplate para encontrar cada digito da subsenha na tela."""
+    """Usa cv2.matchTemplate para encontrar cada digito da subsenha na tela.
+    Mascara posicoes ja encontradas pra evitar duplicatas em digitos repetidos."""
     import cv2
     import numpy as np
 
@@ -888,12 +889,16 @@ def detect_subsenha_digits(hwnd, subsenha="", quiet=False):
     ry1 = max(0, ok_y - wtop - 280)
     rx2 = min(screen_bgr.shape[1], ok_x - wleft + 150)
     ry2 = min(screen_bgr.shape[0], ok_y - wtop)
-    roi = screen_bgr[ry1:ry2, rx1:rx2]
+    roi = screen_bgr[ry1:ry2, rx1:ry2]
 
     if not quiet:
         log("    Buscando subsenha '%s'" % subsenha)
     results = []
     MIN_MATCH = 0.95  # 95% minimo para subsenha (digitos)
+    MASK_RADIUS = 25  # raio pra mascarar posicoes ja usadas
+
+    # Mascara de posicoes ja encontradas (evita duplicatas)
+    mask = np.zeros(roi.shape[:2], dtype=np.uint8)
 
     for ch in subsenha:
         if not ch.isdigit():
@@ -903,13 +908,13 @@ def detect_subsenha_digits(hwnd, subsenha="", quiet=False):
             log("    %d: sem referencia" % d)
             continue
 
-        # Carrega referencia e converte para BGR
+        # Carrega referencia e converte pra BGR
         ref_img = np.array(refs[d].convert("RGB"))
         ref_bgr = cv2.cvtColor(ref_img, cv2.COLOR_RGB2BGR)
         rh, rw = ref_bgr.shape[:2]
 
-        # Template matching
-        result = cv2.matchTemplate(roi, ref_bgr, cv2.TM_CCOEFF_NORMED)
+        # Template matching com mascara
+        result = cv2.matchTemplate(roi, ref_bgr, cv2.TM_CCOEFF_NORMED, mask=mask)
         _, max_val, _, max_loc = cv2.minMaxLoc(result)
 
         # Coordenada absoluta na tela
@@ -918,6 +923,13 @@ def detect_subsenha_digits(hwnd, subsenha="", quiet=False):
         if max_val >= MIN_MATCH:
             log("    %d => (%d,%d) match=%.3f OK" % (d, ax, ay, max_val))
             results.append((d, ax, ay))
+            # Mascara posicao encontrada pra nao achar o mesmo digito de novo
+            cx = max_loc[0] + rw // 2
+            cy = max_loc[1] + rh // 2
+            cv2.circle(mask, (cx, cy), MASK_RADIUS, 255, -1)
+        else:
+            if not quiet:
+                log("    %d => match=%.3f < %.3f (nao encontrado na tela)" % (d, max_val, MIN_MATCH))
 
     if not results and not quiet:
         log("    Nenhum digito com match bom — subsenha nao necessaria")
@@ -1186,9 +1198,10 @@ def _ask_manual_subsenha(sub):
     return result["ok"]
 
 
-def _do_subsenha(hwnd, sub):
+def _do_subsenha(hwnd, sub, idx=0):
     """Detecta e clica digitos da subsenha (95% minimo).
-    Retry por 3s. Se nao detectar, presume que ja entrou no mundo."""
+    Retry por 3s. Se nao detectar, presume que ja entrou no mundo.
+    Apos digitar, verifica por 3s se a tela de subsenha reaparece (senha errada)."""
     if not (HAS_MSS and HAS_PIL and sub):
         if not sub:
             log("    => conta sem subsenha, continuando")
@@ -1200,6 +1213,12 @@ def _do_subsenha(hwnd, sub):
         attempt += 1
         digits_on_screen = detect_subsenha_digits(hwnd, sub, quiet=True)
         if digits_on_screen:
+            # Verificar se todos os digitos da subsenha foram encontrados
+            if len(digits_on_screen) < len([c for c in sub if c.isdigit()]):
+                log("    => Apenas %d/%s digitos encontrados — aguardando mais" %
+                    (len(digits_on_screen), sub))
+                time.sleep(0.5)
+                continue
             ok_x = opts["ok_x"]
             ok_y = opts["ok_y"]
             for i, (d, dx, dy) in enumerate(digits_on_screen):
@@ -1213,9 +1232,28 @@ def _do_subsenha(hwnd, sub):
             time.sleep(0.3)
             focus_game(hwnd)
             click(ok_x, ok_y)
-            log("    Subsenha %s digitada com sucesso (auto)" % sub)
-            if not wait_with_focus(hwnd, 2.0):
-                return False
+            log("    Subsenha %s digitada — verificando se entrou no mundo..." % sub)
+
+            # Verificar por 3s se a tela de subsenha reaparece
+            verify_deadline = time.time() + 3.0
+            time.sleep(1.0)  # dar tempo pra tela trocar
+            while time.time() < verify_deadline:
+                recheck = detect_subsenha_digits(hwnd, sub, quiet=True)
+                if recheck and len(recheck) >= len([c for c in sub if c.isdigit()]):
+                    # Subsenha ainda na tela = senha errada
+                    log("    => ERRO: subsenha %s incorreta — tela reapareceu" % sub)
+                    _do_screenshot_subsenha_fail(hwnd, idx)
+                    log("    => Pressionando ESC")
+                    focus_game(hwnd)
+                    press_escape()
+                    time.sleep(1.0)
+                    log("    => Click Tela Anterior (2310,990)")
+                    focus_game(hwnd)
+                    click(2310, 990)
+                    time.sleep(2.0)
+                    return False
+                time.sleep(0.5)
+            log("    Subsenha %s OK — entrou no mundo" % sub)
             return True
         time.sleep(0.5)
     # Nenhuma subsenha detectada apos 3s → entrou no mundo direto
@@ -1223,7 +1261,22 @@ def _do_subsenha(hwnd, sub):
     return True
 
 
-def _do_click_comeca(hwnd, sub):
+def _do_screenshot_subsenha_fail(hwnd, idx):
+    """Screenshot de subsenha incorreta — salva como ContaXX_subsenha.png."""
+    today = datetime.date.today().strftime("%Y-%m-%d")
+    folder = os.path.join(PROJECT_DIR, today)
+    os.makedirs(folder, exist_ok=True)
+    fname = "Conta%02d_subsenha.png" % idx
+    fpath = os.path.join(folder, fname)
+    shot = _screenshot_game(hwnd)
+    if shot is None:
+        log("    WARN: falha ao capturar screenshot de subsenha")
+        return
+    shot.save(fpath, "PNG")
+    log("    => Screenshot subsenha falha salva: %s" % fpath)
+
+
+def _do_click_comeca(hwnd, sub, idx=0):
     """Clica COMECA + subsenha (procura por 3s). Retorna True se ok."""
     if need_coord("comeca"):
         x, y = coords["comeca"]
@@ -1233,7 +1286,7 @@ def _do_click_comeca(hwnd, sub):
         log("    => aguardando 3s para subsenha aparecer")
         if not wait_with_focus(hwnd, 3.0):
             return False
-        if not _do_subsenha(hwnd, sub):
+        if not _do_subsenha(hwnd, sub, idx):
             return False
     else:
         log("    ERRO: 'comeca' nao mapeado")
@@ -1583,7 +1636,7 @@ def flow_run_account(acc, idx, hwnd, pid):
         log("    => aguardando 1s apos screenshot char")
         if not wait_with_focus(hwnd, 1.0):
             return False
-        if not _do_click_comeca(hwnd, sub):
+        if not _do_click_comeca(hwnd, sub, idx):
             return False
 
         if _stop_requested:
@@ -1626,7 +1679,7 @@ def flow_run_account(acc, idx, hwnd, pid):
             log("    => aguardando 1s apos screenshot char")
             if not wait_with_focus(hwnd, 1.0):
                 return False
-            if not _do_click_comeca(hwnd, sub):
+            if not _do_click_comeca(hwnd, sub, idx):
                 return False
 
             if _stop_requested:
@@ -1644,8 +1697,9 @@ def flow_run_account(acc, idx, hwnd, pid):
             log("15) Screenshot Mercury")
             _do_screenshot(hwnd, idx, "Mercury")
         else:
-            # Mercury sem personagem → Tela Anterior + Desconectar (fora do mundo)
+            # Mercury sem personagem → screenshot + Tela Anterior + Desconectar (fora do mundo)
             log("    nivel.jpg NAO encontrado no Mercury — Tela Anterior + Desconectar")
+            _do_screenshot(hwnd, idx, "Mercury_SemNivel")
             log("    Click Tela Anterior em (2310,990)")
             focus_game(hwnd)
             click(2310, 990)
@@ -1662,8 +1716,9 @@ def flow_run_account(acc, idx, hwnd, pid):
             return True
 
     else:
-        # Venus sem personagem → Tela Anterior → redirecionar para Mercury
+        # Venus sem personagem → screenshot + Tela Anterior → redirecionar para Mercury
         log("    nivel.jpg NAO encontrado no Venus — redirecionando para Mercury")
+        _do_screenshot(hwnd, idx, "Venus_SemNivel")
         log("    Click Tela Anterior em (2310,990)")
         focus_game(hwnd)
         click(2310, 990)
@@ -1691,7 +1746,7 @@ def flow_run_account(acc, idx, hwnd, pid):
             log("    => aguardando 1s apos screenshot char")
             if not wait_with_focus(hwnd, 1.0):
                 return False
-            if not _do_click_comeca(hwnd, sub):
+            if not _do_click_comeca(hwnd, sub, idx):
                 return False
 
             if _stop_requested:
@@ -1707,8 +1762,9 @@ def flow_run_account(acc, idx, hwnd, pid):
             log("15) Screenshot Mercury")
             _do_screenshot(hwnd, idx, "Mercury")
         else:
-            # Mercury sem personagem → Tela Anterior + Desconectar (fora do mundo)
+            # Mercury sem personagem → screenshot + Tela Anterior + Desconectar (fora do mundo)
             log("    nivel.jpg NAO encontrado no Mercury — Tela Anterior + Desconectar")
+            _do_screenshot(hwnd, idx, "Mercury_SemNivel")
             log("    Click Tela Anterior em (2310,990)")
             focus_game(hwnd)
             click(2310, 990)
