@@ -1057,7 +1057,7 @@ def _clear_backspace(hwnd, times=20, delay=0.05):
         time.sleep(delay)
 
 
-def do_credentials(acc, hwnd):
+def do_credentials(acc, hwnd, idx=0):
     focus_game(hwnd)
     log("    => aguardando 2s apos START")
     time.sleep(2.0)
@@ -1097,10 +1097,14 @@ def do_credentials(acc, hwnd):
 
     # Login falhou — screenshot + ESC
     log("    => FALHA NO LOGIN — Venus NAO encontrado")
-    _do_screenshot_fail(hwnd, acc.get("user", "unknown"))
+    _do_screenshot_fail(hwnd, idx)
     log("    => Pressionando ESC")
     focus_game(hwnd)
     press_escape()
+    time.sleep(1.0)
+    log("    => Click OK em (1280,590)")
+    focus_game(hwnd)
+    click(1280, 590)
     time.sleep(1.0)
     return False
 
@@ -1226,14 +1230,12 @@ def _do_screenshot_char(hwnd, idx, server_label):
     take_world_screenshot(hwnd, "Conta%02d" % idx, "%s_char" % server_label)
 
 
-def _do_screenshot_fail(hwnd, user_name):
+def _do_screenshot_fail(hwnd, idx):
     """Screenshot de falha de login — salva como ContaXX_Fail.png."""
     today = datetime.date.today().strftime("%Y-%m-%d")
     folder = os.path.join(PROJECT_DIR, today)
     os.makedirs(folder, exist_ok=True)
-    existing = [f for f in os.listdir(folder) if "_Fail" in f]
-    next_num = len(existing) + 1
-    fname = "Conta%02d_Fail.png" % next_num
+    fname = "Conta%02d_Fail.png" % idx
     fpath = os.path.join(folder, fname)
     shot = _screenshot_game(hwnd)
     if shot is None:
@@ -1504,7 +1506,7 @@ def flow_run_account(acc, idx, hwnd, pid):
     # ═══ FASE 1: Login no Venus ═══
     log("--- FASE 1: Login Venus ---")
     focus_game(hwnd)
-    if not do_credentials(acc, hwnd):
+    if not do_credentials(acc, hwnd, idx):
         log("    Login falhou — pulando conta %d" % idx)
         return False
 
