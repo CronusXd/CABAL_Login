@@ -708,13 +708,24 @@ def mark_done(idx):
         f.write("")
 
 
-def write_output_line(acc, status, extra=""):
-    ts = time.strftime("%Y-%m-%d %H:%M:%S")
-    parts = "%s;user=%s;status=%s" % (ts, acc.get("user", "?"), status)
-    if extra:
-        parts += ";" + extra
+def write_output_line(acc, idx, status):
+    """Escreve resultado da conta no output.txt no formato:
+    Conta X
+    Usuario: ...
+    Senha: ...
+    subsenha: ...
+    Status: ...
+    """
+    block = (
+        "Conta %d\n"
+        "Usuario: %s\n"
+        "Senha: %s\n"
+        "subsenha: %s\n"
+        "Status: %s\n"
+    ) % (idx, acc.get("user", "?"), acc.get("pass", "?"),
+         acc.get("subsenha", "?"), status)
     with open(OUT_PATH, "a", encoding="utf-8") as f:
-        f.write(parts + "\n")
+        f.write(block + "\n")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1623,7 +1634,7 @@ def flow_run_account(acc, idx, hwnd, pid):
             click(2315, 988)
             if not wait_with_focus(hwnd, 2.0):
                 return False
-            write_output_line(acc, "done", "")
+            write_output_line(acc, idx, "Logada com sucesso")
             log("    *** CONTA %d FINALIZADA (Mercury sem nivel) ***" % idx)
             return True
 
@@ -1686,7 +1697,7 @@ def flow_run_account(acc, idx, hwnd, pid):
             click(2315, 988)
             if not wait_with_focus(hwnd, 2.0):
                 return False
-            write_output_line(acc, "done", "")
+            write_output_line(acc, idx, "Logada com sucesso")
             log("    *** CONTA %d FINALIZADA (Mercury sem nivel) ***" % idx)
             return True
 
@@ -1695,7 +1706,7 @@ def flow_run_account(acc, idx, hwnd, pid):
     if not _do_disconnect(hwnd):
         return False
 
-    write_output_line(acc, "done", "")
+    write_output_line(acc, idx, "Logada com sucesso")
     log("    *** CONTA %d FINALIZADA ***" % idx)
     return True
 
@@ -1834,7 +1845,7 @@ def run_flow(go_immediately, wait_process):
                 break
         else:
             log("conta %d NAO entrou no mundo — abortando loop (corrija e reinicie)" % idx)
-            write_output_line(acc, "falha_fluxo")
+            write_output_line(acc, idx, "Fail")
             break
 
     if g_logfile:
