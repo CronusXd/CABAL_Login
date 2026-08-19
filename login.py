@@ -1418,12 +1418,16 @@ def _do_open_server_menu(hwnd):
     return True
 
 
-def _do_mercury_channel_only(hwnd):
-    """Navega O→Selecionar Servidor→sim, procura Canal_Mercury.
-    Fluxo: encontrar Mercury/Mercury2 primeiro → procurar Canal_Mercury → clicar."""
-    log("    O -> Selecionar Servidor -> sim (aguardar 5s)")
-    if not _do_open_server_menu(hwnd):
-        return False
+def _do_mercury_channel_only(hwnd, open_menu_first=True):
+    """Procura Canal_Mercury e entra.
+    open_menu_first=True: faz O→Selecionar Servidor→sim antes (veio do mundo).
+    open_menu_first=False: menu de canais ja esta aberto (veio de Tela Anterior)."""
+    if open_menu_first:
+        log("    O -> Selecionar Servidor -> sim (aguardar 5s)")
+        if not _do_open_server_menu(hwnd):
+            return False
+    else:
+        log("    Menu de canais ja aberto (veio de Tela Anterior) — buscando Mercury diretamente")
 
     mercury_variants = ["Mercury", "Mercury2"]
     venus_variants = ["venus", "venus2"]
@@ -1600,9 +1604,9 @@ def flow_run_account(acc, idx, hwnd, pid):
         if _stop_requested:
             return False
 
-        # ═══ FASE 2: Trocar para Mercury ═══
+        # ═══ FASE 2: Trocar para Mercury (veio do mundo Venus) ═══
         log("--- FASE 2: Trocar para Mercury ---")
-        if not _do_mercury_channel_only(hwnd):
+        if not _do_mercury_channel_only(hwnd, open_menu_first=True):
             return False
 
         if _stop_requested:
@@ -1640,15 +1644,18 @@ def flow_run_account(acc, idx, hwnd, pid):
             log("15) Screenshot Mercury")
             _do_screenshot(hwnd, idx, "Mercury")
         else:
-            # Mercury sem personagem → Tela Anterior + Desconectar
+            # Mercury sem personagem → Tela Anterior + Desconectar (fora do mundo)
             log("    nivel.jpg NAO encontrado no Mercury — Tela Anterior + Desconectar")
             log("    Click Tela Anterior em (2310,990)")
             focus_game(hwnd)
             click(2310, 990)
             if not wait_with_focus(hwnd, 2.0):
                 return False
-            log("--- FASE 3: Desconectar ---")
-            if not _do_disconnect(hwnd):
+            log("    Click Desconectar (Voltar) em (2310,990)")
+            focus_game(hwnd)
+            click(2310, 990)
+            log("    Aguardando %.1fs para voltar a tela de login" % opts["wait_back"])
+            if not wait_with_focus(hwnd, opts["wait_back"]):
                 return False
             write_output_line(acc, idx, "Fail")
             log("    *** CONTA %d FINALIZADA (Fail — Mercury sem nivel) ***" % idx)
@@ -1665,7 +1672,7 @@ def flow_run_account(acc, idx, hwnd, pid):
 
         # ═══ FASE 2 (via redirect): Mercury direto ═══
         log("--- FASE 2: Redirect para Mercury (Venus sem nivel) ---")
-        if not _do_mercury_channel_only(hwnd):
+        if not _do_mercury_channel_only(hwnd, open_menu_first=False):
             return False
 
         if _stop_requested:
@@ -1700,15 +1707,18 @@ def flow_run_account(acc, idx, hwnd, pid):
             log("15) Screenshot Mercury")
             _do_screenshot(hwnd, idx, "Mercury")
         else:
-            # Mercury sem personagem → Tela Anterior + Desconectar
+            # Mercury sem personagem → Tela Anterior + Desconectar (fora do mundo)
             log("    nivel.jpg NAO encontrado no Mercury — Tela Anterior + Desconectar")
             log("    Click Tela Anterior em (2310,990)")
             focus_game(hwnd)
             click(2310, 990)
             if not wait_with_focus(hwnd, 2.0):
                 return False
-            log("--- FASE 3: Desconectar ---")
-            if not _do_disconnect(hwnd):
+            log("    Click Desconectar (Voltar) em (2310,990)")
+            focus_game(hwnd)
+            click(2310, 990)
+            log("    Aguardando %.1fs para voltar a tela de login" % opts["wait_back"])
+            if not wait_with_focus(hwnd, opts["wait_back"]):
                 return False
             write_output_line(acc, idx, "Fail")
             log("    *** CONTA %d FINALIZADA (Fail — Mercury sem nivel) ***" % idx)
