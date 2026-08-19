@@ -1231,14 +1231,15 @@ def _do_screenshot_fail(hwnd, user_name):
     today = datetime.date.today().strftime("%Y-%m-%d")
     folder = os.path.join(PROJECT_DIR, today)
     os.makedirs(folder, exist_ok=True)
-    # Numeracao: pegar proximo numero disponivel na pasta
-    existing = [f for f in os.listdir(folder) if f.startswith("Conta") and "_Fail" in f]
+    existing = [f for f in os.listdir(folder) if "_Fail" in f]
     next_num = len(existing) + 1
     fname = "Conta%02d_Fail.png" % next_num
     fpath = os.path.join(folder, fname)
-    shot = mss.mss().grab(monitor_from_hwnd(hwnd))
-    img = PIL.Image.frombytes("RGB", shot.size, shot.bgra, "raw", "BGRX")
-    img.save(fpath, "PNG")
+    shot = _screenshot_game(hwnd)
+    if shot is None:
+        log("    WARN: falha ao capturar screenshot de falha")
+        return
+    shot.save(fpath, "PNG")
     log("    => Screenshot falha salva: %s" % fpath)
 
 
