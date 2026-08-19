@@ -1049,29 +1049,60 @@ def take_world_screenshot(hwnd, acc_name, server_label):
     log("    => Screenshot salva: %s" % fpath)
 
 
+def _clear_backspace(hwnd, times=20, delay=0.05):
+    """Pressiona Backspace rapidamente para limpar campo."""
+    focus_game(hwnd)
+    for _ in range(times):
+        press_key(VK_BACK)
+        time.sleep(delay)
+
+
 def do_credentials(acc, hwnd):
     focus_game(hwnd)
     log("    => aguardando 2s apos START")
     time.sleep(2.0)
-    log("    => click pré-login em (1379,597)")
+    log("    => click pre-login em (1379,597)")
     focus_game(hwnd)
     click(1379, 597)
     if not wait_with_focus(hwnd, 1.0):
         return False
-    log("    => limpando campos + digitando usuario/senha (Enter)")
-    clear_field()
+
+    # Limpar campo de usuario com Backspace
+    log("    => limpando campo usuario (20x Backspace)")
+    _clear_backspace(hwnd, 20, 0.05)
+    log("    => digitando usuario: %s" % acc["user"])
     type_text(acc["user"])
+
     press_tab()
     time.sleep(0.2)
-    clear_field()
+
+    # Limpar campo de senha com Backspace
+    log("    => limpando campo senha (20x Backspace)")
+    _clear_backspace(hwnd, 20, 0.05)
+    log("    => digitando senha")
     type_text(acc["pass"])
     time.sleep(0.5)
     press_enter()
     if opts["double_enter"]:
         time.sleep(0.4)
         press_enter()
-    log("    => aguardando 2s apos Enter (Venus ja disponivel)")
-    wait_with_focus(hwnd, 2.0)
+
+    # Verificar login: aguardar 3s e procurar venus/venus2
+    log("    => aguardando 3s para verificar login...")
+    wait_with_focus(hwnd, 3.0)
+    venus_pos = find_on_screen_multi(hwnd, ["venus", "venus2"], threshold=0.90)
+    if venus_pos[0]:
+        log("    => Login OK — Venus encontrado na tela")
+        return True
+
+    # Login falhou — screenshot + ESC
+    log("    => FALHA NO LOGIN — Venus NAO encontrado")
+    _do_screenshot_fail(hwnd, acc.get("user", "unknown"))
+    log("    => Pressionando ESC")
+    focus_game(hwnd)
+    press_escape()
+    time.sleep(1.0)
+    return False
 
 
 # ── Funções auxiliares do fluxo ──────────────────────────────────────────────
@@ -1193,6 +1224,22 @@ def _do_screenshot_char(hwnd, idx, server_label):
         log("    WARN: jogo nao esta em primeiro plano — tentando mesmo assim")
     time.sleep(1.0)
     take_world_screenshot(hwnd, "Conta%02d" % idx, "%s_char" % server_label)
+
+
+def _do_screenshot_fail(hwnd, user_name):
+    """Screenshot de falha de login — salva como ContaXX_Fail.png."""
+    today = datetime.date.today().strftime("%Y-%m-%d")
+    folder = os.path.join(PROJECT_DIR, today)
+    os.makedirs(folder, exist_ok=True)
+    # Numeracao: pegar proximo numero disponivel na pasta
+    existing = [f for f in os.listdir(folder) if f.startswith("Conta") and "_Fail" in f]
+    next_num = len(existing) + 1
+    fname = "Conta%02d_Fail.png" % next_num
+    fpath = os.path.join(folder, fname)
+    shot = mss.mss().grab(monitor_from_hwnd(hwnd))
+    img = PIL.Image.frombytes("RGB", shot.size, shot.bgra, "raw", "BGRX")
+    img.save(fpath, "PNG")
+    log("    => Screenshot falha salva: %s" % fpath)
 
 
 def _do_select_channel(hwnd, server_image, canal_image, canal_label, max_retries=15):
@@ -1456,7 +1503,9 @@ def flow_run_account(acc, idx, hwnd, pid):
     # ═══ FASE 1: Login no Venus ═══
     log("--- FASE 1: Login Venus ---")
     focus_game(hwnd)
-    do_credentials(acc, hwnd)
+    if not do_credentials(acc, hwnd):
+        log("    Login falhou — pulando conta %d" % idx)
+        return False
 
     if _stop_requested:
         return False
