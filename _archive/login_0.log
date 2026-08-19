@@ -1,0 +1,20 @@
+# CABAL_Login — DLL carregada
+[console] ativado — F8=login | F9=mapear botoes
+[login] preparando gatilho F8
+[login] PRONTO — F8=login | F9=mapear botoes...
+[login] gatilho acionado — iniciando login
+[login] F8 detectado; iniciando login
+[login] loop de 256 conta(s): 0..255
+# conta 0/256 (bila111)
+[login] ==== CONTA bila111 ====
+[login] 1-3: digitando id/senha + Enter
+[login] ok: conectado (login)
+[login] 4: selecionando servidor VENUS
+[login] 5: selecionando CANAL 9
+[login] ok   tela de personagem (char listo)
+[login] 6: clicando ENTRAR
+[login] 7: clicando COMEÇA (Iniciar)
+[login] 8-9: digitando subsenha
+[login] ok   mundo (char carregado)
+[login] 10-11: abrindo inventario (I)
+[login] 12-15: menu O + selecionar servidor + sim + desconectar

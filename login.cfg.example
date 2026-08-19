@@ -1,0 +1,50 @@
+# login.cfg — coords dos botoes + opcoes de tempo do login.py
+# Coordenadas em PIXELS da tela (mesmo tamanho/posicao de janela do jogo).
+# Gere/ajuste com:  python login.py map   (passe o mouse e aperte F9)
+# Formato:  <nome> <x> <y>    (botao)   |   <nome> <valor>  (opcao)
+#
+# Botoes :
+#   entrar              : botao Entrar da tela de login (opcional - Enter ja funciona)
+#   servidor            : botao do servidor VENUS/MERCURIO (seletor de servidor)
+#   canal               : um canal (7/8/9) no seletor de canais
+#   comeca              : botao Iniciar na tela de personagem
+#   selecionar_servidor : item "selecionar servidor" do MENU (apos apertar O)
+#   sim                 : botao sim do dialogo de confirmacao
+#   desconectar         : botao desconectar
+entrar 2431 989
+servidor 2225 340
+canal 2250 698
+comeca 2433 987
+selecionar_servidor 0 0
+sim 0 0
+desconectar 0 0
+
+# Opcoes (tempos em SEGUNDOS)
+wait_action 2.0   # pausa minima entre acoes (nao deixe abaixo de 2)
+wait_login 6.0    # apos Enter de login ate clicar no servidor
+wait_server 4.0   # apos VENUS ate selecionar canal
+wait_char 8.0     # apos canal ate clicar ENTRAR (tela de personagem)
+wait_sub 2.5      # janela de subsenha abrir
+wait_world 15.0   # apos Comeca+subsenha ate carregar o mundo
+wait_back 15.0    # desconexao ate voltar pra tela de login
+double_enter 1    # Enter duplo na tela de login (1=sim, 0=unico)
+logout 1          # 1=volta p/ login e continua; 0=para apos a 1a conta
+verify 0          # 1=ler ouro/nivel/char da memoria (ReadProcessMemory; pode alertar anti-cheat)
+
+# Subsenha — deteccao por imagem (reconhecimento de digitos 0-9 na tela)
+ok_x 1224         # coordenada X do botao OK na tela de subsenha
+ok_y 638          # coordenada Y do botao OK na tela de subsenha
+grid_x 1090       # coordenada X inicial do grid de digitos (ajuste conforme sua resolucao)
+grid_y 470        # coordenada Y inicial do grid de digitos
+cell_w 50         # largura de cada celula do teclado numerico
+cell_h 40         # altura de cada celula do teclado numerico
+grid_cols 3       # colunas do grid de digitos
+grid_rows 4       # linhas do grid de digitos
+cell_gap 4        # espacamento entre celulas (pixels)
+#
+# Para ajustar grid_x/grid_y/cell_w/cell_h:
+#   1. Abra o jogo, va ate a tela de subsenha (click COMECA)
+#   2. Observe a posicao do grid de digitos na tela
+#   3. Ajuste grid_x/grid_y para o canto superior esquerdo do grid
+#   4. Ajuste cell_w/cell_h para o tamanho de cada digito
+#   5. Ajuste grid_cols/grid_rows para a disposicao (ex: 3x4 para 10 digitos + 2 extras)

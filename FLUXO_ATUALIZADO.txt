@@ -1,0 +1,154 @@
+=====================================================================
+  DIAGRAMA DE FLUXO — CABAL LOGIN (Atualizado 2026-08-18)
+=====================================================================
+
+START (botao GUI)
+  │
+  ▼
+╔══════════════════════════════════════════════════════════════╗
+║  FASE 1: Login Venus                                        ║
+╠══════════════════════════════════════════════════════════════╣
+║                                                              ║
+║  1. Aguardar 2s                                              ║
+║  2. Click (1379,597) — pre-login                             ║
+║  3. Digitar usuario + senha + Enter                          ║
+║  4. Aguardar 2s                                              ║
+║                                                              ║
+║  5. Selecionar canal Venus (IMAGEM)                          ║
+║     ┌─────────────────────────────────────────────────┐      ║
+║     │ move_mouse_center (evita hover)                 │      ║
+║     │ Buscar Canal_venus.jpg na tela (90% thresh)     │      ║
+║     │   -> Encontrou?                                 │      ║
+║     │      Verificar venus/venus2 (90%)               │      ║
+║     │      -> OK? Click + prossegue                   │      ║
+║     │      -> Nao? Click venus/venus2 (refresh)       │      ║
+║     │   -> Nao encontrou? Click venus/venus2          │      ║
+║     │      -> Repete ate 15x                          │      ║
+║     └─────────────────────────────────────────────────┘      ║
+║                                                              ║
+║  6. Click ENTRAR (2431,989)                                  ║
+║                                                              ║
+║  7. Verificar nivel.jpg (90% confianca)                      ║
+║     ┌─────────────────────────────────────────────────┐      ║
+║     │ nivel.jpg encontrado?                           │      ║
+║     │   SIM ──────────────────────────────┐           │      ║
+║     │   NAO ─────┐                        │           │      ║
+║     └────────────┼────────────────────────┼───────────┘      ║
+║                  │                        │                   ║
+║                  ▼                        ▼                   ║
+║         Click Tela Anterior         COMECA + Subsenha         ║
+║         (2310,990)                  (90% confianca)          ║
+║                  │                        │                   ║
+║                  │                   Aguardar 5s              ║
+║                  │                        │                   ║
+║                  │                   Ctrl+I + Screenshot      ║
+║                  │                   Venus                    ║
+║                  │                        │                   ║
+║                  │                        ▼                   ║
+║                  │              ╔══════════════════════╗      ║
+║                  │              ║  FASE 2: Mercury     ║      ║
+║                  │              ║  (Canal Only)        ║      ║
+║                  │              ╚══════════════════════╝      ║
+║                  │                        │                   ║
+║                  ▼                        ▼                   ║
+╚══════════════════════╤═══════════════════════════════════════╝
+                 │                        │
+                 ▼                        ▼
+╔══════════════════════════════════════════════════════════════╗
+║  FASE 2: Redirect Mercury (Venus sem nivel)                 ║
+║  FASE 2: Trocar Mercury (apos screenshot Venus)             ║
+╠══════════════════════════════════════════════════════════════╣
+║                                                              ║
+║  _do_mercury_channel_only(hwnd):                             ║
+║  ┌─────────────────────────────────────────────────────────┐ ║
+║  │ _do_open_server_menu (O→Selecionar Servidor→sim→5s)    │ ║
+║  │                                                         │ ║
+║  │ FASE 1: Garantir Mercury visivel (15 tentativas):      │ ║
+║  │   1. move_mouse_center (evita hover)                    │ ║
+║  │   2. Buscar Mercury/Mercury2 (90% thresh)              │ ║
+║  │      -> Encontrou? Prossegue pra FASE 2                │ ║
+║  │      -> Nao? Click Mercury/Mercury2 pra refresh        │ ║
+║  │                                                         │ ║
+║  │ FASE 2: Procurar Canal_Mercury (15 tentativas):        │ ║
+║  │   1. move_mouse_center (evita hover)                    │ ║
+║  │   2. Buscar Canal_Mercury.jpg (60% thresh)             │ ║
+║  │      -> Encontrou? Click + ENTRAR (2431,989)           │ ║
+║  │      -> Nao? Click Mercury/Mercury2 pra refresh        │ ║
+║  │                                                         │ ║
+║  │   3. Falhou apos 15x? -> ERRO                          │ ║
+║  └─────────────────────────────────────────────────────────┘ ║
+║                                                              ║
+║  DEPOIS do canal:                                            ║
+║  Verificar nivel.jpg (90% confianca)                         ║
+║     ┌─────────────────────────────────────────────────┐      ║
+║     │ nivel.jpg encontrado?                           │      ║
+║     │   SIM ──────────────────────┐                   │      ║
+║     │   NAO ─────┐                │                   │      ║
+║     └────────────┼────────────────┼───────────────────┘      ║
+║                  │                │                           ║
+║                  ▼                ▼                           ║
+║          Tela Anterior       COMECA + Subsenha                ║
+║          + Desconectar       (90% confianca)                 ║
+║                              Aguardar 5s                     ║
+║                              Ctrl+I + Screenshot Mercury     ║
+║                                       │                      ║
+║                                       ▼                      ║
+║                              ╔══════════════════════╗        ║
+║                              ║  FASE 3: Desconectar ║        ║
+║                              ╚══════════════════════╝        ║
+╚══════════════════════════════════════════════════════════════╝
+                 │
+                 ▼
+╔══════════════════════════════════════════════════════════════╗
+║  FASE 3: Desconectar                                         ║
+╠══════════════════════════════════════════════════════════════╣
+║  O -> Selecionar Servidor -> sim -> Desconectar              ║
+║  Proxima conta                                               ║
+╚══════════════════════════════════════════════════════════════╝
+
+
+=====================================================================
+  RESUMO DAS MUDANCAS (2026-08-18)
+=====================================================================
+
+1. MULTI-IMAGEM: todas as buscas de servidor agora tentam variantes
+   (ex: Mercury + Mercury2, venus + venus2) para lidar com hover
+   que muda a cor do texto.
+
+2. MOVE MOUSE CENTER: antes de cada busca, o mouse vai pro centro
+   da tela pra evitar que fique em cima de um label e mude a cor.
+
+3. FLUXO MERCURY (FASE 2) — REESTRUTURADO:
+   - FASE 1: Primeiro garante que Mercury/Mercury2 esta visivel
+     (mouse centro → buscar Mercury/Mercury2 → refresh se nao)
+   - FASE 2: Depois procura Canal_Mercury
+     (mouse centro → buscar Canal_Mercury → refresh se nao)
+   - Canais de Mercury: Mercury visivel + Canal_venus NAO visivel
+
+4. FLUXO VENUS (FASE 1):
+   - Mouse centro → buscar Canal_venus → verificar servidor
+   - Venus: SOMENTE venus/venus2 visivel, ZERO Mercury na tela
+   - Verificacao FAIL → refresh → repetir
+
+5. TEMPOS DE ESPERA: todas as esperas de 8s/9s reduzidas para 5s
+   - _do_open_server_menu: 9s → 5s
+   - wait_char: 8s → 5s
+   - wait_world: 9s → 5s
+   - _do_disconnect: 9s → 5s
+
+6. CONFIANCA DAS IMAGENS:
+   - Canal_venus: 90%
+   - Canal_Mercury: 60% (reduzido de 90% por dificuldade de match)
+   - Mercury/Mercury2: 90%
+   - venus/venus2: 90%
+   - nivel.jpg: 90%
+
+7. FUNCOES AUXILIARES:
+   - find_on_screen_multi(hwnd, img_names, threshold)
+   - click_image_multi(hwnd, img_names, wait, threshold)
+   - move_mouse_center(hwnd)
+   - _verify_server_visibility(hwnd, target, threshold)
+
+8. REMOVIDO: test_login.py
+
+=====================================================================

@@ -1,0 +1,78 @@
+[10:23:11] # conta 0/1602 (bila111) — log: D:\projeto\CABAL_Login\login_0.log
+[10:23:11] ========== CONTA 0: bila111 ==========
+[10:23:11] --- FASE 1: Login Venus ---
+[10:23:12]     => aguardando 2s apos START
+[10:23:14]     => click pré-login em (1379,597)
+[10:23:15]     => limpando campos + digitando usuario/senha (Enter)
+[10:23:17]     => aguardando 2s apos Enter (Venus ja disponivel)
+[10:23:20]     find_on_screen('Canal_venus') => (2168,650) match=0.963
+[10:23:20]     find_on_screen('venus') => (2137,339) match=0.982
+[10:23:21]     find_on_screen('Mercury') => (2143,389) match=0.979
+[10:23:21]     Mercury visivel quando deveria ser so Venus — refresh
+[10:23:21]     Canal Venus encontrado mas servidor incorreto (tentativa 1) — refresh
+[10:23:21]     find_on_screen('venus') => (2137,339) match=0.982
+[10:23:25]     find_on_screen('Canal_venus') => (2168,695) match=0.995
+[10:23:25]     find_on_screen('venus') => (2137,339) match=0.992
+[10:23:26]     find_on_screen('Mercury') => NAO ENCONTRADO (match=0.490 < 0.900)
+[10:23:26]     find_on_screen('Mercury2') => NAO ENCONTRADO (match=0.742 < 0.900)
+[10:23:26]     Canal Venus encontrado em venus (tentativa 2)
+[10:23:29] 3) Click ENTRAR em (2431,989)
+[10:23:31] 4) Verificando nivel.jpg (personagem no Venus)...
+[10:23:32]     find_on_screen('nivel') => (2226,321) match=0.994
+[10:23:32]     nivel.jpg encontrado — aguardando 1s + screenshot char + COMECA
+[10:23:32]     => aguardando 1s apos nivel.jpg
+[10:23:33]     Screenshot char Venus
+[10:23:34]     => Screenshot salva: D:\projeto\CABAL_Login\2026-08-19\Conta00_Venus_char.png
+[10:23:34]     => aguardando 1s apos screenshot char
+[10:23:35]     Click COMECA em (2433,987)
+[10:23:36]     => aguardando 3s para subsenha aparecer
+[10:23:42]     Subsenha Sem necessidade — personagem ja entrou no mundo (scan 5 tentativas)
+[10:23:42] 5) Aguardando mundo Venus carregar (9.0s)
+[10:23:51] 6) Screenshot Venus
+[10:23:51]     Ctrl+I + screenshot inventario Venus
+[10:23:53]     => Screenshot salva: D:\projeto\CABAL_Login\2026-08-19\Conta00_Venus_inventario.png
+[10:23:53] --- FASE 2: Trocar para Mercury ---
+[10:23:53]     O -> Selecionar Servidor -> sim (aguardar 5s)
+[10:23:53]     Press O
+[10:23:56]     Procurando Selecionar Servidor
+[10:23:56]     find_on_screen('Selecionar Servidor') => (1276,481) match=0.999
+[10:23:58]     Click sim
+[10:23:58]     find_on_screen('sim') => (1305,638) match=0.999
+[10:23:59]     Aguardando 5s para canais carregarem
+[10:24:05]     find_on_screen('Mercury') => NAO ENCONTRADO (match=0.490 < 0.900)
+[10:24:05]     find_on_screen('Mercury2') => NAO ENCONTRADO (match=0.742 < 0.900)
+[10:24:05]     Mercury nao visivel, clicando Mercury pra refresh (tentativa 1/15)
+[10:24:06]     find_on_screen('Mercury') => NAO ENCONTRADO (match=0.490 < 0.900)
+[10:24:06]     find_on_screen('Mercury2') => NAO ENCONTRADO (match=0.742 < 0.900)
+[10:24:06]     find_on_screen('venus') => (2137,339) match=0.992
+[10:24:10]     find_on_screen('Mercury') => (2143,389) match=0.999
+[10:24:10]     Mercury/Mercury2 encontrado (tentativa 2)
+[10:24:11]     find_on_screen('Canal_Mercury') => NAO ENCONTRADO (match=0.484 < 0.600)
+[10:24:11]     Canal Mercury nao encontrado (match<60%), refresh (tentativa 1/15)
+[10:24:12]     find_on_screen('Mercury') => (2143,389) match=0.999
+[10:24:15]     find_on_screen('Canal_Mercury') => (2156,652) match=0.995
+[10:24:15]     Canal Mercury encontrado (tentativa 2)
+[10:24:18]     Click ENTRAR em (2431,989)
+[10:24:21] 13) Verificando nivel.jpg (personagem no Mercury)...
+[10:24:21]     find_on_screen('nivel') => (2226,641) match=0.994
+[10:24:21]     nivel.jpg encontrado — aguardando 1s + screenshot char + COMECA
+[10:24:21]     => aguardando 1s apos nivel.jpg
+[10:24:22]     Screenshot char Mercury
+[10:24:23]     => Screenshot salva: D:\projeto\CABAL_Login\2026-08-19\Conta00_Mercury_char.png
+[10:24:23]     => aguardando 1s apos screenshot char
+[10:24:24]     Click COMECA em (2433,987)
+[10:24:25]     => aguardando 3s para subsenha aparecer
+[10:24:31]     Subsenha Sem necessidade — personagem ja entrou no mundo (scan 5 tentativas)
+[10:24:31] 14) Aguardando mundo Mercury carregar (9.0s)
+[10:24:40] 15) Screenshot Mercury
+[10:24:40]     Ctrl+I + screenshot inventario Mercury
+[10:24:42]     => Screenshot salva: D:\projeto\CABAL_Login\2026-08-19\Conta00_Mercury_inventario.png
+[10:24:42] --- FASE 3: Desconectar ---
+[10:24:42]     Press O
+[10:24:45]     Procurando Selecionar Servidor
+[10:24:45]     find_on_screen('Selecionar Servidor') => (1276,481) match=0.999
+[10:24:47]     Click sim
+[10:24:47]     find_on_screen('sim') => (1305,638) match=0.999
+[10:24:49]     Aguardando 5s para tela de Desconectar
+[10:24:54]     Click Desconectar em (2315,988)
+[10:24:56]     *** CONTA 0 FINALIZADA ***

@@ -1,0 +1,107 @@
+
+## sonda carregada, base=0000000140000000
+hook instalado: base+549FD8 -> 00007FF827403057
+hook instalado: base+356B30 -> 00007FF827403010
+pronto. Acoes a capturar: [O=menu] [I=inventario] [menu->desconectar]
+
+## sonda carregada, base=0000000140000000
+hook instalado: base+549FD8 -> 00007FF84B4D3057
+hook instalado: base+356B30 -> 00007FF84B4D3010
+pronto. Acoes a capturar: [O=menu] [I=inventario] [menu->desconectar]
+
+## sonda carregada, base=0000000140000000
+hook instalado: base+549FD8 -> 00007FF84B433057
+hook instalado: base+356B30 -> 00007FF84B433010
+pronto. Acoes a capturar: [O=menu] [I=inventario] [menu->desconectar]
+
+## sonda carregada, base=0000000140000000
+hook instalado: base+549FD8 -> 00007FF84B433057
+hook instalado: base+356B30 -> 00007FF84B433010
+pronto. Acoes a capturar: [O=menu] [I=inventario] [menu->desconectar]
+
+## sonda carregada, base=0000000140000000
+hook instalado: base+549FD8 -> 00007FF84B403057
+hook instalado: base+356B30 -> 00007FF84B403010
+pronto. Acoes a capturar: [O=menu] [I=inventario] [menu->desconectar]
+
+## sonda carregada, base=0000000140000000
+hook instalado: base+549FD8 -> 00007FF84B403057
+hook instalado: base+356B30 -> 00007FF84B403010
+pronto. Acoes a capturar: [O=menu] [I=inventario] [menu->desconectar]
+
+## sonda carregada, base=0000000140000000
+hook instalado: base+549FD8 -> 00007FF84B343057
+hook instalado: base+356B30 -> 00007FF84B343010
+pronto. Acoes a capturar: [O=menu] [I=inventario] [menu->desconectar]
+
+## sonda carregada, base=0000000140000000
+## anti-hack patch aplicado em 0x352CDB
+hook instalado: base+549FD8 -> 00007FF8273D3087
+hook instalado: base+356B30 -> 00007FF8273D3040
+hook instalado: base+389698 -> 00007FF8273D30CE
+hook instalado: base+A01B34 -> 00007FF8273D3115
+hook instalado: base+5643A3 -> 00007FF8273D315C
+hook instalado: base+7222B3 -> 00007FF8273D31A3
+hook instalado: base+80A0B2 -> 00007FF8273D31EA
+hook instalado: base+AC7267 -> 00007FF8273D3231
+pronto. Acoes a capturar:
+  [O=menu] [I=inventario] [menu->desconectar] [ENCRYPT=send plaintext]
+  [Mercury/Venus=canal 0x8C] [Iniciar=EnterWorld 0x8E]
+
+## sonda carregada, base=0000000140000000
+## anti-hack patch aplicado em 0x352CDB
+hook instalado: base+549FD8 -> 00007FFFFFEB3087
+hook instalado: base+356B30 -> 00007FFFFFEB3040
+hook instalado: base+389698 -> 00007FFFFFEB30CE
+hook instalado: base+A01B34 -> 00007FFFFFEB3115
+hook instalado: base+5643A3 -> 00007FFFFFEB315C
+hook instalado: base+7222B3 -> 00007FFFFFEB31A3
+hook instalado: base+80A0B2 -> 00007FFFFFEB31EA
+hook instalado: base+AC7267 -> 00007FFFFFEB3231
+pronto. Acoes a capturar:
+  [O=menu] [I=inventario] [menu->desconectar] [ENCRYPT=send plaintext]
+  [Mercury/Venus=canal 0x8C] [Iniciar=EnterWorld 0x8E]
+
+## sonda carregada, base=0000000140000000
+## anti-hack patch aplicado em 0x352CDB
+prologo base+549FD8: 48 89 5C 24 10 48 89 6C
+hook instalado: base+549FD8 -> 00007FF826F14087
+prologo base+356B30: 40 53 48 83 EC 30 89 6C
+hook instalado: base+356B30 -> 00007FF826F14040
+prologo base+389698: 48 85 D2 74 47 48 89 5C
+hook instalado: base+389698 -> 00007FF826F140CE
+prologo base+A01B34: 00 EB 0D 4C 8B C6 48 8D
+hook instalado: base+A01B34 -> 00007FF826F14115
+prologo base+5643A3: B8 8E 00 00 00 89 44 24
+hook instalado: base+5643A3 -> 00007FF826F1415C
+prologo base+7222B3: 40 CC 00 41 B8 8E 00 00
+hook instalado: base+7222B3 -> 00007FF826F141A3
+prologo base+80A0B2: 4D 8B 09 41 B8 8E 00 00
+hook instalado: base+80A0B2 -> 00007FF826F141EA
+prologo base+AC7267: C0 0F 85 2D 02 00 00 8B
+hook instalado: base+AC7267 -> 00007FF826F14231
+pronto. Acoes a capturar:
+  [O=menu] [I=inventario] [menu->desconectar] [ENCRYPT=send plaintext]
+  [Mercury/Venus=canal 0x8C] [Iniciar=EnterWorld 0x8E]
+
+## sonda carregada, base=0000000140000000
+## anti-hack patch aplicado em 0x352CDB
+prologo base+549FD8: 48 89 5C 24 10 48 89 6C
+hook instalado: base+549FD8 -> 00007FF826F14087
+prologo base+356B30: 40 53 48 83 EC 30 89 6C
+hook instalado: base+356B30 -> 00007FF826F14040
+prologo base+389698: 48 85 D2 74 47 48 89 5C
+hook instalado: base+389698 -> 00007FF826F140CE
+prologo base+A01B34: 00 EB 0D 4C 8B C6 48 8D
+hook instalado: base+A01B34 -> 00007FF826F14115
+prologo base+5643A3: B8 8E 00 00 00 89 44 24
+hook instalado: base+5643A3 -> 00007FF826F1415C
+prologo base+7222B3: 40 CC 00 41 B8 8E 00 00
+hook instalado: base+7222B3 -> 00007FF826F141A3
+prologo base+80A0B2: 4D 8B 09 41 B8 8E 00 00
+hook instalado: base+80A0B2 -> 00007FF826F141EA
+prologo base+AC7267: C0 0F 85 2D 02 00 00 8B
+hook instalado: base+AC7267 -> 00007FF826F14231
+pronto. Acoes a capturar:
+  [O=menu] [I=inventario] [menu->desconectar] [ENCRYPT=send plaintext]
+  [Mercury/Venus=canal 0x8C] [Iniciar=EnterWorld 0x8E]
