@@ -1338,7 +1338,7 @@ def _do_mercury_selection(hwnd):
         if _stop_requested:
             return False
         focus_game(hwnd)
-        if click_image(hwnd, "Selecionar Servidor", wait=1.0, threshold=0.55):
+        if click_image_multi(hwnd, ["Selecionar Servidor", "Selecionar Servidor1", "Selecionar Servidor2", "Selecionar Servidor3"], wait=1.0, threshold=0.50):
             found = True
             break
         log("    Tentativa %d/3 — Selecionar Servidor nao encontrado, retry..." % (attempt + 1))
@@ -1350,7 +1350,7 @@ def _do_mercury_selection(hwnd):
         return False
 
     log("    Click sim")
-    if not click_image(hwnd, "sim", wait=1.0, threshold=0.55):
+    if not click_image_multi(hwnd, ["sim", "sim1", "sim2", "sim3"], wait=1.0, threshold=0.50):
         log("    ERRO: 'sim' nao encontrado")
         return False
 
@@ -1395,7 +1395,7 @@ def _do_open_server_menu(hwnd):
         if _stop_requested:
             return False
         focus_game(hwnd)
-        if click_image(hwnd, "Selecionar Servidor", wait=1.0, threshold=0.55):
+        if click_image_multi(hwnd, ["Selecionar Servidor", "Selecionar Servidor1", "Selecionar Servidor2", "Selecionar Servidor3"], wait=1.0, threshold=0.50):
             found = True
             break
         log("    Tentativa %d/3 — Selecionar Servidor nao encontrado, retry..." % (attempt + 1))
@@ -1407,7 +1407,7 @@ def _do_open_server_menu(hwnd):
         return False
 
     log("    Click sim")
-    if not click_image(hwnd, "sim", wait=1.0, threshold=0.55):
+    if not click_image_multi(hwnd, ["sim", "sim1", "sim2", "sim3"], wait=1.0, threshold=0.50):
         log("    ERRO: 'sim' nao encontrado")
         return False
 
@@ -1496,7 +1496,7 @@ def _do_disconnect(hwnd):
         if _stop_requested:
             return False
         focus_game(hwnd)
-        if click_image(hwnd, "Selecionar Servidor", wait=1.0, threshold=0.55):
+        if click_image_multi(hwnd, ["Selecionar Servidor", "Selecionar Servidor1", "Selecionar Servidor2", "Selecionar Servidor3"], wait=1.0, threshold=0.50):
             found = True
             break
         log("    Tentativa %d/3 — Selecionar Servidor nao encontrado, retry..." % (attempt + 1))
@@ -1508,7 +1508,7 @@ def _do_disconnect(hwnd):
         return False
 
     log("    Click sim")
-    if not click_image(hwnd, "sim", wait=1.0, threshold=0.55):
+    if not click_image_multi(hwnd, ["sim", "sim1", "sim2", "sim3"], wait=1.0, threshold=0.50):
         log("    ERRO: 'sim' nao encontrado")
         return False
 
